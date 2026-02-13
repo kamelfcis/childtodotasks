@@ -69,6 +69,35 @@ export const useChildren = () => {
     }
   }
 
+  const updateChildAvatar = async (childId, avatarFile) => {
+    if (!user || !avatarFile) return { error: 'Missing data' }
+
+    const fileExt = avatarFile.name.split('.').pop()
+    const fileName = `${user.id}/${Date.now()}.${fileExt}`
+    const { error: uploadError } = await supabase.storage
+      .from('children-avatars')
+      .upload(fileName, avatarFile)
+
+    if (uploadError) return { error: uploadError.message }
+
+    const { data: urlData } = supabase.storage
+      .from('children-avatars')
+      .getPublicUrl(fileName)
+    const avatar_url = urlData.publicUrl
+
+    const { error } = await supabase
+      .from('children')
+      .update({ avatar_url })
+      .eq('id', childId)
+
+    if (!error) {
+      setChildren(prev =>
+        prev.map(c => c.id === childId ? { ...c, avatar_url } : c)
+      )
+    }
+    return { error }
+  }
+
   const deleteChild = async (childId) => {
     const { error } = await supabase
       .from('children')
@@ -81,6 +110,6 @@ export const useChildren = () => {
     return { error }
   }
 
-  return { children, loading, addChild, deleteChild, updateChildPoints, refetch: fetchChildren }
+  return { children, loading, addChild, deleteChild, updateChildPoints, updateChildAvatar, refetch: fetchChildren }
 }
 

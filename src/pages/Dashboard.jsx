@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useChildren } from '../hooks/useChildren'
 import { useTasks } from '../hooks/useTasks'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FiPlus, FiTrash2, FiArrowRight, FiImage, FiUser, FiStar } from 'react-icons/fi'
+import { FiPlus, FiTrash2, FiArrowRight, FiImage, FiUser, FiStar, FiCamera } from 'react-icons/fi'
 import FloatingShapes from '../components/FloatingShapes'
 import Navbar from '../components/Navbar'
 import PointsBadge from '../components/PointsBadge'
@@ -14,7 +14,9 @@ import { playPop } from '../sounds/useSounds'
 
 export default function Dashboard() {
   const { user } = useAuth()
-  const { children, loading, addChild, deleteChild } = useChildren()
+  const { children, loading, addChild, deleteChild, updateChildAvatar } = useChildren()
+  const avatarInputRefs = useRef({})
+  const [updatingAvatarId, setUpdatingAvatarId] = useState(null)
   const { defaultTasks, loading: tasksLoading, addTask, updateTask, deleteTask } = useTasks()
   const [showAddForm, setShowAddForm] = useState(false)
   const [childName, setChildName] = useState('')
@@ -49,6 +51,19 @@ export default function Dashboard() {
   const handleDeleteChild = async (childId) => {
     if (window.confirm('Are you sure you want to remove this child?')) {
       await deleteChild(childId)
+    }
+  }
+
+  const handleChangeAvatar = async (childId, e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setUpdatingAvatarId(childId)
+    await updateChildAvatar(childId, file)
+    playPop()
+    setUpdatingAvatarId(null)
+    // Reset file input so same file can be selected again
+    if (avatarInputRefs.current[childId]) {
+      avatarInputRefs.current[childId].value = ''
     }
   }
 
@@ -213,20 +228,49 @@ export default function Dashboard() {
                   <FiTrash2 />
                 </button>
 
-                {/* Avatar */}
+                {/* Avatar with change button */}
                 <div className="flex flex-col items-center mb-4">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-100 to-blue-100 border-2 border-purple-200 overflow-hidden mb-3">
-                    {child.avatar_url ? (
-                      <img
-                        src={child.avatar_url}
-                        alt={child.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <FiUser className="text-3xl text-purple-300" />
-                      </div>
-                    )}
+                  <div className="relative mb-3">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-100 to-blue-100 border-2 border-purple-200 overflow-hidden">
+                      {updatingAvatarId === child.id ? (
+                        <div className="w-full h-full flex items-center justify-center bg-purple-50">
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity }}
+                            className="text-2xl"
+                          >
+                            ⏳
+                          </motion.div>
+                        </div>
+                      ) : child.avatar_url ? (
+                        <img
+                          src={child.avatar_url}
+                          alt={child.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <FiUser className="text-3xl text-purple-300" />
+                        </div>
+                      )}
+                    </div>
+                    {/* Camera overlay button */}
+                    <motion.button
+                      whileHover={{ scale: 1.15 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => avatarInputRefs.current[child.id]?.click()}
+                      className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-neon-blue to-neon-purple text-white flex items-center justify-center shadow-lg shadow-blue-200 border-2 border-white hover:shadow-blue-300 transition-all"
+                      title="Change photo"
+                    >
+                      <FiCamera className="text-sm" />
+                    </motion.button>
+                    <input
+                      ref={(el) => (avatarInputRefs.current[child.id] = el)}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleChangeAvatar(child.id, e)}
+                      className="hidden"
+                    />
                   </div>
                   <h3 className="text-xl font-bold text-text-primary">{child.name}</h3>
                 </div>
