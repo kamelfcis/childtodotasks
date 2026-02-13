@@ -25,33 +25,6 @@ export default function TaskCard({ task, isDone, onComplete, index }) {
       )}
 
       <div className="flex items-center gap-4 relative z-10">
-        {/* Checkbox */}
-        <motion.div
-          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center border-[3px] transition-all flex-shrink-0 ${
-            isDone
-              ? 'bg-neon-green border-neon-green'
-              : 'border-purple-300 bg-white hover:border-neon-pink/60 hover:bg-pink-50'
-          }`}
-          whileTap={{ scale: isDone ? 1 : 0.8 }}
-          transition={{ duration: 0.3, ease: [0.45, 0, 0.55, 1] }}
-        >
-          {isDone ? (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', damping: 10, stiffness: 200 }}
-            >
-              <FiCheck className="text-white text-2xl sm:text-3xl stroke-[3]" />
-            </motion.div>
-          ) : (
-            <motion.div
-              animate={{ scale: [1, 1.15, 1] }}
-              transition={{ repeat: Infinity, duration: 2.5, ease: [0.45, 0, 0.55, 1] }}
-              className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-purple-200"
-            />
-          )}
-        </motion.div>
-
         {/* Large Task Icon */}
         <motion.div
           className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center flex-shrink-0 border-2 transition-all ${
@@ -85,25 +58,32 @@ export default function TaskCard({ task, isDone, onComplete, index }) {
           )}
         </div>
 
-        {/* Status badge */}
-        {isDone ? (
-          <motion.span
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: 'spring', damping: 10, stiffness: 200 }}
-            className="text-4xl flex-shrink-0"
-          >
-            ✅
-          </motion.span>
-        ) : (
-          <motion.div
-            animate={{ x: [0, 4, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5, ease: [0.45, 0, 0.55, 1] }}
-            className="text-purple-300 text-2xl flex-shrink-0"
-          >
-            👉
-          </motion.div>
-        )}
+        {/* Checkbox on the right */}
+        <motion.div
+          className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center border-[3px] transition-all flex-shrink-0 ${
+            isDone
+              ? 'bg-neon-green border-neon-green'
+              : 'border-purple-300 bg-white hover:border-neon-pink/60 hover:bg-pink-50'
+          }`}
+          whileTap={{ scale: isDone ? 1 : 0.8 }}
+          transition={{ duration: 0.3, ease: [0.45, 0, 0.55, 1] }}
+        >
+          {isDone ? (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', damping: 10, stiffness: 200 }}
+            >
+              <FiCheck className="text-white text-2xl sm:text-3xl stroke-[3]" />
+            </motion.div>
+          ) : (
+            <motion.div
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ repeat: Infinity, duration: 2.5, ease: [0.45, 0, 0.55, 1] }}
+              className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-purple-200"
+            />
+          )}
+        </motion.div>
       </div>
     </motion.div>
   )
