@@ -6,15 +6,15 @@ export default memo(function ProgressBar({ completed, total }) {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between mb-2">
-        <span className="text-sm font-bold text-text-secondary">
+      <div className="flex justify-between mb-1.5 sm:mb-2">
+        <span className="text-xs sm:text-sm font-bold text-text-secondary">
           Today's Progress
         </span>
-        <span className="text-sm font-bold text-neon-orange">
+        <span className="text-xs sm:text-sm font-bold text-neon-orange">
           {completed}/{total} tasks ⭐
         </span>
       </div>
-      <div className="w-full h-5 bg-purple-100 rounded-full overflow-hidden border border-purple-200">
+      <div className="w-full h-4 sm:h-5 bg-purple-100 rounded-full overflow-hidden border border-purple-200">
         <motion.div
           className="h-full rounded-full bg-gradient-to-r from-neon-pink via-neon-purple to-neon-blue"
           initial={{ width: 0 }}
@@ -24,7 +24,7 @@ export default memo(function ProgressBar({ completed, total }) {
       </div>
       {percentage === 100 && (
         <motion.p
-          className="text-center text-neon-green font-bold mt-2 text-lg"
+          className="text-center text-neon-green font-bold mt-1.5 sm:mt-2 text-sm sm:text-lg"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring', damping: 12 }}

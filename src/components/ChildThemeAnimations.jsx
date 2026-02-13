@@ -428,7 +428,7 @@ export default function ChildThemeAnimations({ childName, show, onClose }) {
 
           {/* Modal content */}
           <motion.div
-            className="relative z-20 flex flex-col items-center"
+            className="relative z-20 flex flex-col items-center px-4 max-w-sm sm:max-w-md mx-auto"
             initial={{ scale: 0, rotate: -15 }}
             animate={{ scale: 1, rotate: 0 }}
             exit={{ scale: 0, rotate: 15, opacity: 0 }}
@@ -437,11 +437,8 @@ export default function ChildThemeAnimations({ childName, show, onClose }) {
           >
             {/* Glowing circle behind animation */}
             <motion.div
-              className="absolute rounded-full pointer-events-none"
+              className="absolute rounded-full pointer-events-none w-[220px] h-[220px] sm:w-[320px] sm:h-[320px] -top-3 sm:-top-5 left-1/2 -translate-x-1/2"
               style={{
-                width: 320,
-                height: 320,
-                top: -20,
                 background: `radial-gradient(circle, ${glowColor1}, transparent 70%)`,
               }}
               animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
@@ -452,18 +449,19 @@ export default function ChildThemeAnimations({ childName, show, onClose }) {
             <motion.div
               animate={{ y: [0, -12, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: [0.45, 0, 0.55, 1] }}
+              className="w-[200px] h-[200px] sm:w-[300px] sm:h-[300px]"
             >
               <Lottie
                 animationData={animationData}
                 loop={true}
                 autoplay={true}
-                style={{ width: 300, height: 300 }}
+                style={{ width: '100%', height: '100%' }}
               />
             </motion.div>
 
             {/* Celebration text with bounce */}
             <motion.h2
-              className={`text-5xl font-black mt-2 ${theme.textColor} text-center drop-shadow-lg`}
+              className={`text-3xl sm:text-5xl font-black mt-1 sm:mt-2 ${theme.textColor} text-center drop-shadow-lg`}
               initial={{ opacity: 0, y: 30, scale: 0.5 }}
               animate={{ opacity: 1, y: 0, scale: [1, 1.1, 1] }}
               transition={{ delay: 0.3, type: 'spring', damping: 10, stiffness: 100 }}
@@ -472,7 +470,7 @@ export default function ChildThemeAnimations({ childName, show, onClose }) {
             </motion.h2>
 
             <motion.p
-              className={`text-xl font-bold mt-2 ${theme.subColor} text-center`}
+              className={`text-base sm:text-xl font-bold mt-1 sm:mt-2 ${theme.subColor} text-center`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, type: 'spring', damping: 12 }}
@@ -491,17 +489,17 @@ export default function ChildThemeAnimations({ childName, show, onClose }) {
 
             {/* Points earned badge */}
             <motion.div
-              className="mt-3 px-6 py-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/30"
+              className="mt-2 sm:mt-3 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/30"
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: [0, 1.2, 1] }}
               transition={{ delay: 1, type: 'spring', damping: 12 }}
             >
-              <span className="text-white font-black text-lg">🎁 Surprise! Keep going! 🚀</span>
+              <span className="text-white font-black text-sm sm:text-lg">🎁 Surprise! Keep going! 🚀</span>
             </motion.div>
 
             {/* Tap to close hint */}
             <motion.p
-              className="text-white/40 text-sm mt-4 font-semibold"
+              className="text-white/40 text-xs sm:text-sm mt-3 sm:mt-4 font-semibold"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.5 }}

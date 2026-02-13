@@ -105,16 +105,16 @@ export default memo(function Navbar() {
 
   return (
     <nav className="sticky top-0 z-40 backdrop-blur-2xl bg-white/80 border-b-2 border-purple-100/60 shadow-[0_4px_30px_rgba(180,74,255,0.08)]">
-      <div className="max-w-6xl mx-auto px-4 py-3">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3">
         <div className="flex items-center justify-between">
           {/* ===== LOGO ===== */}
           <Link to="/dashboard" className="flex items-center gap-3 group flex-shrink-0">
             <motion.div
               whileHover={{ rotate: [0, -10, 10, -5, 0] }}
               transition={{ duration: 0.5 }}
-              className="w-11 h-11 rounded-xl bg-gradient-to-br from-neon-pink via-neon-purple to-neon-blue flex items-center justify-center shadow-lg shadow-purple-300/40"
+              className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-gradient-to-br from-neon-pink via-neon-purple to-neon-blue flex items-center justify-center shadow-lg shadow-purple-300/40"
             >
-              <span className="text-2xl">✨</span>
+              <span className="text-lg sm:text-2xl">✨</span>
             </motion.div>
             <div className="hidden sm:block">
               <h1 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-neon-pink via-neon-purple to-neon-blue leading-tight">

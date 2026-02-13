@@ -12,7 +12,7 @@ export default function GiftCard({ gift, childPoints = 0, onClaim, index, canCla
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: index * 0.1, type: 'spring', damping: 18, stiffness: 120 }}
       whileHover={{ scale: 1.03, y: -5 }}
-      className={`relative rounded-3xl overflow-hidden border-2 transition-all shadow-sm ${
+      className={`relative rounded-2xl sm:rounded-3xl overflow-hidden border-2 transition-all shadow-sm ${
         isAffordable && canClaim
           ? 'border-green-400 shadow-xl shadow-green-100/60 bg-white'
           : canClaim
@@ -26,14 +26,14 @@ export default function GiftCard({ gift, childPoints = 0, onClaim, index, canCla
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ type: 'spring', damping: 15 }}
-          className="absolute top-3 right-3 z-20 px-3 py-1.5 rounded-full bg-neon-green text-white font-bold text-xs flex items-center gap-1 shadow-lg shadow-green-200"
+          className="absolute top-2 right-2 sm:top-3 sm:right-3 z-20 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-neon-green text-white font-bold text-[10px] sm:text-xs flex items-center gap-1 shadow-lg shadow-green-200"
         >
-          <FiCheck className="text-sm" /> Ready!
+          <FiCheck className="text-xs sm:text-sm" /> Ready!
         </motion.div>
       )}
 
       {/* Image */}
-      <div className={`h-40 bg-gradient-to-br flex items-center justify-center overflow-hidden relative ${
+      <div className={`h-32 sm:h-40 bg-gradient-to-br flex items-center justify-center overflow-hidden relative ${
         isAffordable && canClaim
           ? 'from-green-100 to-blue-100'
           : 'from-purple-100 to-pink-100'
@@ -48,7 +48,7 @@ export default function GiftCard({ gift, childPoints = 0, onClaim, index, canCla
                 : { rotate: [0, 4, -4, 0] }
             }
             transition={{ repeat: Infinity, duration: 3, ease: [0.45, 0, 0.55, 1] }}
-            className="text-7xl"
+            className="text-5xl sm:text-7xl"
           >
             🎁
           </motion.div>
@@ -57,23 +57,23 @@ export default function GiftCard({ gift, childPoints = 0, onClaim, index, canCla
         {/* Locked overlay */}
         {canClaim && !isAffordable && (
           <div className="absolute inset-0 bg-white/50 flex items-center justify-center">
-            <FiLock className="text-4xl text-purple-300" />
+            <FiLock className="text-3xl sm:text-4xl text-purple-300" />
           </div>
         )}
       </div>
 
       {/* Content */}
-      <div className="p-5">
-        <h3 className="font-bold text-text-primary text-lg mb-1">{gift.title}</h3>
+      <div className="p-3.5 sm:p-5">
+        <h3 className="font-bold text-text-primary text-base sm:text-lg mb-1">{gift.title}</h3>
 
         {/* Points cost */}
-        <div className="flex items-center gap-2 mt-2">
-          <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 border border-yellow-300">
-            <span className="text-neon-orange font-black text-lg">{gift.required_points}</span>
-            <span className="text-neon-yellow text-sm">⭐</span>
+        <div className="flex items-center gap-2 mt-1.5 sm:mt-2 flex-wrap">
+          <div className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full bg-yellow-100 border border-yellow-300">
+            <span className="text-neon-orange font-black text-base sm:text-lg">{gift.required_points}</span>
+            <span className="text-neon-yellow text-xs sm:text-sm">⭐</span>
           </div>
           {canClaim && (
-            <span className={`text-sm font-semibold ${isAffordable ? 'text-neon-green' : 'text-text-muted'}`}>
+            <span className={`text-xs sm:text-sm font-semibold ${isAffordable ? 'text-neon-green' : 'text-text-muted'}`}>
               {isAffordable ? 'You can get this!' : `Need ${pointsNeeded} more`}
             </span>
           )}
@@ -81,14 +81,14 @@ export default function GiftCard({ gift, childPoints = 0, onClaim, index, canCla
 
         {/* Progress bar */}
         {canClaim && (
-          <div className="mt-4">
+          <div className="mt-3 sm:mt-4">
             <div className="flex justify-between mb-1">
-              <span className="text-xs font-semibold text-text-muted">Your progress</span>
-              <span className={`text-xs font-bold ${isAffordable ? 'text-neon-green' : 'text-neon-pink'}`}>
+              <span className="text-[10px] sm:text-xs font-semibold text-text-muted">Your progress</span>
+              <span className={`text-[10px] sm:text-xs font-bold ${isAffordable ? 'text-neon-green' : 'text-neon-pink'}`}>
                 {Math.round(progressPercent)}%
               </span>
             </div>
-            <div className="w-full h-3 bg-purple-100 rounded-full overflow-hidden border border-purple-200">
+            <div className="w-full h-2.5 sm:h-3 bg-purple-100 rounded-full overflow-hidden border border-purple-200">
               <motion.div
                 className={`h-full rounded-full ${
                   isAffordable
@@ -110,7 +110,7 @@ export default function GiftCard({ gift, childPoints = 0, onClaim, index, canCla
             whileTap={isAffordable ? { scale: 0.96 } : { scale: 1 }}
             onClick={() => isAffordable && onClaim?.(gift)}
             disabled={!isAffordable || isRedeeming}
-            className={`w-full mt-4 py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all relative overflow-hidden ${
+            className={`w-full mt-3 sm:mt-4 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-black text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 transition-all relative overflow-hidden ${
               isAffordable
                 ? 'bg-gradient-to-r from-neon-green via-green-400 to-neon-blue text-white hover:shadow-xl hover:shadow-green-200 cursor-pointer'
                 : 'bg-purple-50 text-purple-300 cursor-not-allowed border border-purple-200'
@@ -120,7 +120,7 @@ export default function GiftCard({ gift, childPoints = 0, onClaim, index, canCla
               <motion.span
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity }}
-                className="text-2xl"
+                className="text-xl sm:text-2xl"
               >
                 ⏳
               </motion.span>
@@ -129,23 +129,23 @@ export default function GiftCard({ gift, childPoints = 0, onClaim, index, canCla
                 <motion.span
                   animate={{ rotate: [0, 12, -12, 0] }}
                   transition={{ repeat: Infinity, duration: 2, ease: [0.45, 0, 0.55, 1] }}
-                  className="text-2xl"
+                  className="text-lg sm:text-2xl"
                 >
                   🎉
                 </motion.span>
-                <span>Redeem Now!</span>
+                <span className="text-sm sm:text-base font-black">Redeem Now!</span>
                 <motion.span
                   animate={{ rotate: [0, -12, 12, 0] }}
                   transition={{ repeat: Infinity, duration: 2, ease: [0.45, 0, 0.55, 1] }}
-                  className="text-2xl"
+                  className="text-lg sm:text-2xl"
                 >
                   🎉
                 </motion.span>
               </>
             ) : (
               <>
-                <FiLock className="text-xl" />
-                <span>Need {pointsNeeded} more ⭐</span>
+                <FiLock className="text-base sm:text-xl" />
+                <span className="text-xs sm:text-base">Need {pointsNeeded} more ⭐</span>
               </>
             )}
 
@@ -162,8 +162,8 @@ export default function GiftCard({ gift, childPoints = 0, onClaim, index, canCla
 
         {/* Not in child mode */}
         {!canClaim && (
-          <div className="mt-4 py-3 rounded-2xl bg-purple-50 border border-purple-200 text-center">
-            <span className="text-text-muted font-semibold text-sm">
+          <div className="mt-3 sm:mt-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-purple-50 border border-purple-200 text-center">
+            <span className="text-text-muted font-semibold text-xs sm:text-sm">
               <FiGift className="inline mr-1" />
               Select a child to redeem
             </span>

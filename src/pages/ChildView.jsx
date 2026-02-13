@@ -124,11 +124,11 @@ export default function ChildView() {
 
   if (!child && !loading) {
     return (
-      <div className="min-h-screen bg-light-bg flex items-center justify-center">
+      <div className="min-h-screen bg-light-bg flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="text-6xl mb-4">😢</div>
-          <h2 className="text-2xl font-bold text-text-primary">Child not found</h2>
-          <Link to="/dashboard" className="text-neon-blue mt-4 inline-block font-semibold">
+          <div className="text-5xl sm:text-6xl mb-4">😢</div>
+          <h2 className="text-xl sm:text-2xl font-bold text-text-primary">Child not found</h2>
+          <Link to="/dashboard" className="text-neon-blue mt-4 inline-block font-semibold text-sm sm:text-base">
             ← Back to Dashboard
           </Link>
         </div>
@@ -145,20 +145,20 @@ export default function ChildView() {
         onComplete={() => setShowConfetti(false)}
       />
 
-      {/* Character celebration modal (Dark Knight for Karim, Stitch for Reem) */}
+      {/* Character celebration modal */}
       <ChildThemeAnimations
         childName={child?.name}
         show={showCharacterModal}
         onClose={() => setShowCharacterModal(false)}
       />
 
-      <div className="max-w-4xl mx-auto px-4 py-8 relative z-10">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8 relative z-10">
         {/* Back button */}
         <Link to="/dashboard">
           <motion.button
             whileHover={{ scale: 1.05, x: -5 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 text-text-muted hover:text-text-primary mb-6 font-semibold transition-colors"
+            className="flex items-center gap-2 text-text-muted hover:text-text-primary mb-4 sm:mb-6 font-semibold transition-colors text-sm sm:text-base"
           >
             <FiArrowLeft /> Back to Dashboard
           </motion.button>
@@ -169,31 +169,31 @@ export default function ChildView() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring', damping: 18 }}
-          className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 border-2 border-purple-100 mb-8 shadow-lg shadow-purple-50"
+          className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-2 border-purple-100 mb-5 sm:mb-8 shadow-lg shadow-purple-50"
         >
           {/* Large avatar */}
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-3 sm:mb-4">
             <motion.div
-              className="w-52 h-52 sm:w-64 sm:h-64 rounded-3xl bg-gradient-to-br from-pink-100 to-blue-100 border-4 border-purple-200 overflow-hidden shadow-xl shadow-purple-100"
+              className="w-36 h-36 sm:w-52 sm:h-52 md:w-64 md:h-64 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-pink-100 to-blue-100 border-3 sm:border-4 border-purple-200 overflow-hidden shadow-xl shadow-purple-100"
               whileHover={{ scale: 1.05, rotate: 3 }}
               transition={{ type: 'spring', damping: 12 }}
             >
               {child?.avatar_url ? (
                 <img src={child.avatar_url} alt={child?.name} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-7xl">
+                <div className="w-full h-full flex items-center justify-center text-5xl sm:text-7xl">
                   👦
                 </div>
               )}
             </motion.div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            <div className="flex-1 text-center sm:text-left">
-              <h1 className="text-3xl font-black text-text-primary">
+          <div className="flex flex-col items-center gap-3 sm:gap-4">
+            <div className="text-center">
+              <h1 className="text-2xl sm:text-3xl font-black text-text-primary">
                 {child?.name}'s Tasks 🎯
               </h1>
-              <p className="text-text-muted mt-1 font-semibold">
+              <p className="text-text-muted mt-1 font-semibold text-xs sm:text-sm">
                 {new Date().toLocaleDateString('en-US', {
                   weekday: 'long',
                   year: 'numeric',
@@ -213,7 +213,7 @@ export default function ChildView() {
                     animate={{ opacity: 0, y: -30, scale: 1.5 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 1.5 }}
-                    className="text-neon-green font-black text-xl absolute -top-4"
+                    className="text-neon-green font-black text-lg sm:text-xl absolute -top-4"
                   >
                     +{earnedPoints} ⭐
                   </motion.span>
@@ -223,7 +223,7 @@ export default function ChildView() {
           </div>
 
           {/* Progress bar */}
-          <div className="mt-6">
+          <div className="mt-4 sm:mt-6">
             <ProgressBar completed={completedCount} total={totalCount} />
           </div>
         </motion.div>
@@ -234,50 +234,50 @@ export default function ChildView() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, type: 'spring', damping: 18 }}
-            className="mb-8"
+            className="mb-5 sm:mb-8"
           >
             {/* Toggle button */}
             <motion.button
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => setShowGifts(!showGifts)}
-              className={`w-full p-5 rounded-2xl flex items-center justify-between transition-all border-2 ${
+              className={`w-full p-4 sm:p-5 rounded-2xl flex items-center justify-between transition-all border-2 ${
                 affordableGifts.length > 0
                   ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-300 hover:border-yellow-400 shadow-md shadow-yellow-100'
                   : 'bg-white/60 border-purple-100 hover:border-purple-200'
               }`}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <motion.span
-                  className="text-4xl"
+                  className="text-3xl sm:text-4xl"
                   animate={affordableGifts.length > 0 ? { rotate: [0, 8, -8, 0], scale: [1, 1.08, 1] } : {}}
                   transition={{ repeat: Infinity, duration: 3, ease: [0.45, 0, 0.55, 1] }}
                 >
                   🎁
                 </motion.span>
                 <div className="text-left">
-                  <h3 className="font-bold text-text-primary text-lg">Rewards Shop</h3>
-                  <p className="text-text-muted text-sm">
+                  <h3 className="font-bold text-text-primary text-base sm:text-lg">Rewards Shop</h3>
+                  <p className="text-text-muted text-xs sm:text-sm">
                     {affordableGifts.length > 0
                       ? `🎉 You can redeem ${affordableGifts.length} gift${affordableGifts.length > 1 ? 's' : ''}!`
                       : 'Keep earning stars to unlock gifts!'}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 {affordableGifts.length > 0 && (
                   <motion.span
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ repeat: Infinity, duration: 2, ease: [0.45, 0, 0.55, 1] }}
-                    className="px-3 py-1 rounded-full bg-neon-green text-white font-bold text-sm shadow-sm"
+                    className="px-2 sm:px-3 py-1 rounded-full bg-neon-green text-white font-bold text-xs shadow-sm hidden sm:inline-block"
                   >
                     {affordableGifts.length} ready!
                   </motion.span>
                 )}
                 {showGifts ? (
-                  <FiChevronUp className="text-text-muted text-xl" />
+                  <FiChevronUp className="text-text-muted text-lg sm:text-xl" />
                 ) : (
-                  <FiChevronDown className="text-text-muted text-xl" />
+                  <FiChevronDown className="text-text-muted text-lg sm:text-xl" />
                 )}
               </div>
             </motion.button>
@@ -292,7 +292,7 @@ export default function ChildView() {
                   transition={{ duration: 0.4, ease: [0.45, 0, 0.55, 1] }}
                   className="overflow-hidden"
                 >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mt-4">
                     {gifts.map((gift, index) => (
                       <GiftCard
                         key={gift.id}
@@ -308,8 +308,8 @@ export default function ChildView() {
 
                   {/* Claimed rewards */}
                   {claimedRewards.length > 0 && (
-                    <div className="mt-6">
-                      <h3 className="text-lg font-bold text-text-secondary mb-3">🏆 Your Claimed Rewards</h3>
+                    <div className="mt-4 sm:mt-6">
+                      <h3 className="text-base sm:text-lg font-bold text-text-secondary mb-3">🏆 Your Claimed Rewards</h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {claimedRewards.map((reward, index) => (
                           <motion.div
@@ -319,9 +319,9 @@ export default function ChildView() {
                             transition={{ delay: index * 0.05 }}
                             className="p-3 rounded-xl bg-green-50 border border-green-200 flex items-center gap-3"
                           >
-                            <span className="text-2xl">🏆</span>
+                            <span className="text-xl sm:text-2xl">🏆</span>
                             <div>
-                              <h4 className="font-bold text-text-primary text-sm">{reward.gifts?.title}</h4>
+                              <h4 className="font-bold text-text-primary text-xs sm:text-sm">{reward.gifts?.title}</h4>
                               <p className="text-text-muted text-xs">
                                 {new Date(reward.claimed_at).toLocaleDateString()}
                               </p>
@@ -336,7 +336,7 @@ export default function ChildView() {
                   <Link to={`/rewards?child=${childId}`}>
                     <motion.div
                       whileHover={{ scale: 1.01 }}
-                      className="mt-4 p-3 rounded-xl bg-purple-50 border border-purple-200 text-center text-text-muted hover:text-text-secondary text-sm font-semibold transition-all"
+                      className="mt-4 p-3 rounded-xl bg-purple-50 border border-purple-200 text-center text-text-muted hover:text-text-secondary text-xs sm:text-sm font-semibold transition-all"
                     >
                       View full Rewards Shop →
                     </motion.div>
@@ -354,15 +354,15 @@ export default function ChildView() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-16"
+            className="text-center py-10 sm:py-16"
           >
-            <div className="text-8xl mb-4">📋</div>
-            <h3 className="text-2xl font-bold text-text-secondary">Loading tasks...</h3>
-            <p className="text-text-muted mt-2">Preparing your daily adventure!</p>
+            <div className="text-6xl sm:text-8xl mb-4">📋</div>
+            <h3 className="text-xl sm:text-2xl font-bold text-text-secondary">Loading tasks...</h3>
+            <p className="text-text-muted mt-2 text-sm">Preparing your daily adventure!</p>
           </motion.div>
         ) : (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-text-primary mb-4">
+          <div className="space-y-3 sm:space-y-4">
+            <h2 className="text-lg sm:text-xl font-bold text-text-primary mb-3 sm:mb-4">
               Today's Adventures 🗺️
             </h2>
             {childTasks.map((task, index) => (
@@ -383,19 +383,19 @@ export default function ChildView() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', damping: 12 }}
-            className="mt-8 text-center bg-gradient-to-r from-green-50 to-blue-50 rounded-3xl p-8 border-2 border-green-200 shadow-lg shadow-green-100"
+            className="mt-6 sm:mt-8 text-center bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 border-2 border-green-200 shadow-lg shadow-green-100"
           >
             <motion.div
-              className="text-7xl mb-4"
+              className="text-5xl sm:text-7xl mb-3 sm:mb-4"
               animate={{ rotate: [0, 8, -8, 0], scale: [1, 1.08, 1] }}
               transition={{ repeat: Infinity, duration: 3, ease: [0.45, 0, 0.55, 1] }}
             >
               🏆
             </motion.div>
-            <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-neon-green to-neon-blue">
+            <h2 className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-neon-green to-neon-blue">
               SUPERSTAR!
             </h2>
-            <p className="text-text-secondary mt-2 text-lg font-semibold">
+            <p className="text-text-secondary mt-2 text-base sm:text-lg font-semibold">
               You completed all tasks today! Amazing job! 🌟
             </p>
           </motion.div>

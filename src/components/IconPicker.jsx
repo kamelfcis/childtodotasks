@@ -222,7 +222,7 @@ export default function IconPicker({ selectedIcon, onSelect, onClose }) {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9, y: -10 }}
       transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-      className="absolute z-50 top-full mt-2 left-0 w-80 bg-white rounded-2xl border-2 border-purple-100 shadow-2xl shadow-purple-100/50 overflow-hidden"
+      className="fixed sm:absolute z-50 sm:top-full sm:mt-2 left-2 right-2 sm:left-0 sm:right-auto top-1/4 sm:top-auto w-auto sm:w-80 bg-white rounded-2xl border-2 border-purple-100 shadow-2xl shadow-purple-100/50 overflow-hidden"
     >
       {/* Search bar */}
       <div className="p-3 border-b border-purple-100">

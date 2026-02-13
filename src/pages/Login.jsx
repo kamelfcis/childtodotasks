@@ -27,7 +27,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-light-bg flex items-center justify-center relative overflow-hidden px-4">
+    <div className="min-h-screen bg-light-bg flex items-center justify-center relative overflow-hidden px-4 py-6">
       <FloatingShapes />
 
       <motion.div
@@ -38,49 +38,49 @@ export default function Login() {
       >
         {/* Logo */}
         <motion.div
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
           initial={{ y: -30 }}
           animate={{ y: 0 }}
           transition={{ delay: 0.2, type: 'spring', damping: 15 }}
         >
           <motion.div
-            className="text-7xl mb-4"
+            className="text-5xl sm:text-7xl mb-3 sm:mb-4"
             animate={{ rotate: [0, 8, -8, 0] }}
             transition={{ repeat: Infinity, duration: 4, ease: [0.45, 0, 0.55, 1] }}
           >
             ✨
           </motion.div>
-          <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-neon-pink via-neon-purple to-neon-blue">
+          <h1 className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-neon-pink via-neon-purple to-neon-blue">
             Happy Tasks
           </h1>
-          <p className="text-text-secondary mt-2 font-semibold">Welcome back, Super Parent! 🦸</p>
+          <p className="text-text-secondary mt-2 font-semibold text-sm sm:text-base">Welcome back, Super Parent! 🦸</p>
         </motion.div>
 
         {/* Card */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 border-2 border-purple-100 shadow-xl shadow-purple-100/40">
-          <h2 className="text-2xl font-bold text-text-primary mb-6 text-center">Sign In</h2>
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border-2 border-purple-100 shadow-xl shadow-purple-100/40">
+          <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-4 sm:mb-6 text-center">Sign In</h2>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             <div>
-              <label className="block text-sm font-semibold text-text-secondary mb-2">Email</label>
+              <label className="block text-xs sm:text-sm font-semibold text-text-secondary mb-1.5 sm:mb-2">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3.5 rounded-2xl bg-purple-50 border border-purple-200 text-text-primary placeholder-text-muted focus:outline-none focus:border-neon-pink/50 focus:ring-2 focus:ring-pink-200 transition-all font-semibold"
+                className="w-full px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-purple-50 border border-purple-200 text-text-primary placeholder-text-muted focus:outline-none focus:border-neon-pink/50 focus:ring-2 focus:ring-pink-200 transition-all font-semibold text-sm sm:text-base"
                 placeholder="parent@email.com"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-text-secondary mb-2">Password</label>
+              <label className="block text-xs sm:text-sm font-semibold text-text-secondary mb-1.5 sm:mb-2">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3.5 rounded-2xl bg-purple-50 border border-purple-200 text-text-primary placeholder-text-muted focus:outline-none focus:border-neon-pink/50 focus:ring-2 focus:ring-pink-200 transition-all font-semibold"
+                className="w-full px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-purple-50 border border-purple-200 text-text-primary placeholder-text-muted focus:outline-none focus:border-neon-pink/50 focus:ring-2 focus:ring-pink-200 transition-all font-semibold text-sm sm:text-base"
                 placeholder="••••••••"
               />
             </div>
@@ -90,7 +90,7 @@ export default function Login() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ type: 'spring', damping: 15 }}
-                className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-500 text-sm font-semibold"
+                className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-500 text-xs sm:text-sm font-semibold"
               >
                 {error}
               </motion.div>
@@ -101,7 +101,7 @@ export default function Login() {
               disabled={loading}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-bold text-lg shadow-lg shadow-pink-200 hover:shadow-pink-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-bold text-base sm:text-lg shadow-lg shadow-pink-200 hover:shadow-pink-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -119,7 +119,7 @@ export default function Login() {
             </motion.button>
           </form>
 
-          <p className="text-center text-text-muted mt-6 font-semibold">
+          <p className="text-center text-text-muted mt-4 sm:mt-6 font-semibold text-sm">
             Don't have an account?{' '}
             <Link
               to="/register"
