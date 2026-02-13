@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@theme {
+  --color-neon-pink: #ff6ec7;
+  --color-neon-blue: #00b4d8;
+  --color-neon-purple: #b44aff;
+  --color-neon-green: #00c853;
+  --color-neon-yellow: #ffd600;
+  --color-neon-orange: #ff9100;
+  --color-candy-pink: #ff85a2;
+  --color-candy-blue: #85d7ff;
+  --color-candy-purple: #c485ff;
+  --color-candy-green: #85ffbd;
+  --color-candy-red: #ff4757;
+  --color-candy-coral: #ff6b81;
+
+  /* Light theme colors */
+  --color-light-bg: #f0f4ff;
+  --color-light-card: #ffffff;
+  --color-light-surface: #f5f0ff;
+  --color-light-border: #e0d4f5;
+  --color-text-primary: #2d1b69;
+  --color-text-secondary: #6b5b95;
+  --color-text-muted: #9b8ec4;
+
+  --font-sans: 'Nunito', sans-serif;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-light-bg);
+    overflow-x: hidden;
+  }
+}
+
+/* ============================================
+   BRIGHT COLORFUL BACKGROUND
+   ============================================ */
+.min-h-screen.bg-light-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 20%, rgba(255, 110, 199, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 70% at 90% 80%, rgba(133, 215, 255, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% 10%, rgba(196, 133, 255, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 80% 90%, rgba(133, 255, 189, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 60% at 20% 70%, rgba(255, 214, 0, 0.08) 0%, transparent 50%),
+    linear-gradient(135deg, #f0f4ff 0%, #fce4f3 20%, #e8f0fe 40%, #f3e8ff 60%, #e0f7fa 80%, #f0f4ff 100%);
+  background-attachment: fixed;
+}
+
+/* ============================================
+   SMOOTH ANIMATIONS
+   ============================================ */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-12px) rotate(2deg); }
+  50% { transform: translateY(-20px) rotate(-1deg); }
+  75% { transform: translateY(-8px) rotate(1deg); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-18px) scale(1.03); }
+}
+
+@keyframes bounce-soft {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-14px) scale(1.06); }
+}
+
+@keyframes swing-gentle {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes bubble-float {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  10% { opacity: 0.5; }
+  50% { opacity: 0.7; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-110vh) scale(1); opacity: 0; }
+}
+
+@keyframes twinkle-soft {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.animate-float { animation: float-gentle 5s ease-in-out infinite; }
+.animate-float-slow { animation: float-slow 7s ease-in-out infinite; }
+.animate-bounce-soft { animation: bounce-soft 4s ease-in-out infinite; }
+.animate-swing { animation: swing-gentle 4s ease-in-out infinite; }
+.animate-shimmer { background-size: 200% auto; animation: shimmer 3s linear infinite; }
+.animate-bubble { animation: bubble-float 10s ease-in infinite; }
+.animate-twinkle { animation: twinkle-soft 3s ease-in-out infinite; }
+.animate-pulse-soft { animation: pulse-soft 3s ease-in-out infinite; }
+
+/* ============================================
+   SCROLLBAR (light)
+   ============================================ */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f0f4ff; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #ff85a2, #c485ff, #85d7ff);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #ff6ec7, #b44aff, #00b4d8);
+}
