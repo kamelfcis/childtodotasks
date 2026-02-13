@@ -17,7 +17,7 @@ const CHILD_THEMES = {
   },
   reem: {
     file: '/Stitch animation.json',
-    sound: null,
+    sound: '/afahkoma.mp3',
     label: 'Ohana means family! 💙',
     bg: 'from-sky-400/90 to-blue-600/90',
     textColor: 'text-white',
