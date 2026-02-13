@@ -11,7 +11,7 @@ export default function TaskCard({ task, isDone, onComplete, index }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: index * 0.08, type: 'spring', damping: 20, stiffness: 120 }}
       whileHover={{ scale: isDone ? 1 : 1.02, y: isDone ? 0 : -2 }}
-      whileTap={{ scale: isDone ? 1 : 0.98 }}
+      whileTap={{ scale: isDone ? 1 : 0.96 }}
       className={`relative rounded-3xl p-5 border-2 transition-all duration-300 cursor-pointer overflow-hidden shadow-sm ${
         isDone
           ? 'bg-green-50 border-green-300 shadow-green-100'
@@ -25,15 +25,15 @@ export default function TaskCard({ task, isDone, onComplete, index }) {
       )}
 
       <div className="flex items-center gap-4 relative z-10">
-        {/* Check circle */}
+        {/* Checkbox */}
         <motion.div
-          className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-bold border-2 transition-all ${
+          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center border-[3px] transition-all flex-shrink-0 ${
             isDone
-              ? 'bg-neon-green border-neon-green text-white'
-              : 'border-purple-200 bg-purple-50 text-purple-300'
+              ? 'bg-neon-green border-neon-green'
+              : 'border-purple-300 bg-white hover:border-neon-pink/60 hover:bg-pink-50'
           }`}
-          whileTap={{ rotate: isDone ? 0 : 360 }}
-          transition={{ duration: 0.6, ease: [0.45, 0, 0.55, 1] }}
+          whileTap={{ scale: isDone ? 1 : 0.8 }}
+          transition={{ duration: 0.3, ease: [0.45, 0, 0.55, 1] }}
         >
           {isDone ? (
             <motion.div
@@ -41,38 +41,68 @@ export default function TaskCard({ task, isDone, onComplete, index }) {
               animate={{ scale: 1 }}
               transition={{ type: 'spring', damping: 10, stiffness: 200 }}
             >
-              <FiCheck className="text-2xl" />
+              <FiCheck className="text-white text-2xl sm:text-3xl stroke-[3]" />
             </motion.div>
           ) : (
-            <span className="text-2xl">{taskData.icon || '⭐'}</span>
+            <motion.div
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ repeat: Infinity, duration: 2.5, ease: [0.45, 0, 0.55, 1] }}
+              className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-purple-200"
+            />
           )}
         </motion.div>
 
+        {/* Large Task Icon */}
+        <motion.div
+          className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center flex-shrink-0 border-2 transition-all ${
+            isDone
+              ? 'bg-green-100 border-green-200'
+              : 'bg-gradient-to-br from-purple-50 to-pink-50 border-purple-100'
+          }`}
+          whileHover={{ rotate: isDone ? 0 : 8 }}
+          transition={{ type: 'spring', damping: 12 }}
+        >
+          <span className="text-4xl sm:text-5xl">{taskData.icon || '⭐'}</span>
+        </motion.div>
+
         {/* Task info */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <h3
-            className={`font-bold text-lg ${
+            className={`font-bold text-lg sm:text-xl ${
               isDone ? 'text-neon-green line-through' : 'text-text-primary'
             }`}
           >
             {taskData.title}
           </h3>
-          <div className="flex items-center gap-1 mt-1">
-            <span className="text-neon-orange text-sm font-bold">+{taskData.points}</span>
-            <span className="text-neon-yellow text-xs">⭐</span>
+          <div className="flex items-center gap-1.5 mt-1">
+            <span className="text-neon-orange text-base sm:text-lg font-black">+{taskData.points}</span>
+            <span className="text-neon-yellow text-sm sm:text-base">⭐</span>
           </div>
+          {!isDone && (
+            <p className="text-purple-300 text-xs sm:text-sm font-semibold mt-1">
+              Tap to complete! 👆
+            </p>
+          )}
         </div>
 
         {/* Status badge */}
-        {isDone && (
+        {isDone ? (
           <motion.span
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: 'spring', damping: 10, stiffness: 200 }}
-            className="text-3xl"
+            className="text-4xl flex-shrink-0"
           >
             ✅
           </motion.span>
+        ) : (
+          <motion.div
+            animate={{ x: [0, 4, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: [0.45, 0, 0.55, 1] }}
+            className="text-purple-300 text-2xl flex-shrink-0"
+          >
+            👉
+          </motion.div>
         )}
       </div>
     </motion.div>
