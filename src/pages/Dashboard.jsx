@@ -2,17 +2,20 @@ import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useChildren } from '../hooks/useChildren'
+import { useTasks } from '../hooks/useTasks'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiPlus, FiTrash2, FiArrowRight, FiImage, FiUser, FiStar } from 'react-icons/fi'
 import FloatingShapes from '../components/FloatingShapes'
 import Navbar from '../components/Navbar'
 import PointsBadge from '../components/PointsBadge'
+import TaskManager from '../components/TaskManager'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { playPop } from '../sounds/useSounds'
 
 export default function Dashboard() {
   const { user } = useAuth()
   const { children, loading, addChild, deleteChild } = useChildren()
+  const { defaultTasks, loading: tasksLoading, addTask, updateTask, deleteTask } = useTasks()
   const [showAddForm, setShowAddForm] = useState(false)
   const [childName, setChildName] = useState('')
   const [avatarFile, setAvatarFile] = useState(null)
@@ -160,6 +163,17 @@ export default function Dashboard() {
             </motion.form>
           )}
         </AnimatePresence>
+
+        {/* Task Management Section */}
+        <div className="mb-8">
+          <TaskManager
+            tasks={defaultTasks}
+            onAdd={addTask}
+            onUpdate={updateTask}
+            onDelete={deleteTask}
+            loading={tasksLoading}
+          />
+        </div>
 
         {/* Children List */}
         {loading ? (

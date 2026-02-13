@@ -1,24 +1,105 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '../services/supabase'
 
+// ============================================
+// DEFAULT SEED TASKS (used when parent has none)
+// ============================================
+const SEED_TASKS = [
+  { title: 'Brush Teeth', points: 5, icon: '🪥' },
+  { title: 'Study 30 Minutes', points: 10, icon: '📚' },
+  { title: 'Pray', points: 5, icon: '🤲' },
+  { title: 'Clean Room', points: 10, icon: '🧹' },
+  { title: 'Drink Water', points: 3, icon: '💧' },
+  { title: 'Read a Book', points: 10, icon: '📖' },
+  { title: 'Exercise', points: 8, icon: '🏃' },
+  { title: 'Help Parents', points: 10, icon: '🤝' },
+  { title: 'Sleep Early', points: 5, icon: '😴' },
+  { title: 'Eat Healthy', points: 5, icon: '🥗' },
+]
+
 export const useTasks = () => {
   const [defaultTasks, setDefaultTasks] = useState([])
   const [loading, setLoading] = useState(true)
+  const seedingRef = useRef(false)
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      const { data, error } = await supabase
-        .from('default_tasks')
-        .select('*')
-        .order('points', { ascending: true })
+  const fetchTasks = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setLoading(false); return }
 
-      if (!error) setDefaultTasks(data || [])
-      setLoading(false)
+    const { data, error } = await supabase
+      .from('default_tasks')
+      .select('*')
+      .eq('parent_id', user.id)
+      .order('created_at', { ascending: true })
+
+    if (!error) {
+      // If parent has no tasks yet, seed defaults
+      if ((!data || data.length === 0) && !seedingRef.current) {
+        seedingRef.current = true
+        const seedRows = SEED_TASKS.map(t => ({ ...t, parent_id: user.id }))
+        const { data: inserted } = await supabase
+          .from('default_tasks')
+          .insert(seedRows)
+          .select()
+        if (inserted) setDefaultTasks(inserted)
+        seedingRef.current = false
+      } else {
+        setDefaultTasks(data || [])
+      }
     }
-    fetchTasks()
+    setLoading(false)
   }, [])
 
-  return { defaultTasks, loading }
+  useEffect(() => {
+    fetchTasks()
+  }, [fetchTasks])
+
+  // Add a new task
+  const addTask = useCallback(async (title, points, icon) => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Not authenticated' }
+
+    const { data, error } = await supabase
+      .from('default_tasks')
+      .insert({ title, points: points || 5, icon: icon || '⭐', parent_id: user.id })
+      .select()
+      .single()
+
+    if (!error && data) {
+      setDefaultTasks(prev => [...prev, data])
+    }
+    return { data, error }
+  }, [])
+
+  // Update a task (title, icon, points)
+  const updateTask = useCallback(async (taskId, updates) => {
+    const { data, error } = await supabase
+      .from('default_tasks')
+      .update(updates)
+      .eq('id', taskId)
+      .select()
+      .single()
+
+    if (!error && data) {
+      setDefaultTasks(prev => prev.map(t => t.id === taskId ? data : t))
+    }
+    return { data, error }
+  }, [])
+
+  // Delete a task
+  const deleteTask = useCallback(async (taskId) => {
+    const { error } = await supabase
+      .from('default_tasks')
+      .delete()
+      .eq('id', taskId)
+
+    if (!error) {
+      setDefaultTasks(prev => prev.filter(t => t.id !== taskId))
+    }
+    return { error }
+  }, [])
+
+  return { defaultTasks, loading, addTask, updateTask, deleteTask, refetchTasks: fetchTasks }
 }
 
 export const useChildTasks = (childId) => {

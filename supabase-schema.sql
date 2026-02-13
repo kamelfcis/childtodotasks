@@ -12,9 +12,10 @@ CREATE TABLE children (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 2) DEFAULT TASKS table
+-- 2) DEFAULT TASKS table (per-parent)
 CREATE TABLE default_tasks (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  parent_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   title TEXT NOT NULL,
   points INTEGER NOT NULL DEFAULT 5,
   icon TEXT DEFAULT '⭐',
@@ -53,18 +54,9 @@ CREATE TABLE child_rewards (
 
 -- ============================================
 -- SEED DEFAULT TASKS
+-- Note: After adding parent_id, tasks are created per-parent via the app.
+-- The app will seed default tasks for new parents on first login.
 -- ============================================
-INSERT INTO default_tasks (title, points, icon) VALUES
-  ('Brush Teeth 🪥', 5, '🪥'),
-  ('Study 30 Minutes 📚', 10, '📚'),
-  ('Pray 🤲', 5, '🤲'),
-  ('Clean Room 🧹', 10, '🧹'),
-  ('Drink Water 💧', 3, '💧'),
-  ('Read a Book 📖', 10, '📖'),
-  ('Exercise 🏃', 8, '🏃'),
-  ('Help Parents 🤝', 10, '🤝'),
-  ('Sleep Early 😴', 5, '😴'),
-  ('Eat Healthy 🥗', 5, '🥗');
 
 -- ============================================
 -- ROW LEVEL SECURITY POLICIES
@@ -94,10 +86,22 @@ CREATE POLICY "Parents can delete their children"
   ON children FOR DELETE
   USING (auth.uid() = parent_id);
 
--- DEFAULT TASKS: anyone authenticated can read
-CREATE POLICY "Authenticated users can view default tasks"
+-- DEFAULT TASKS: parent can CRUD only their tasks
+CREATE POLICY "Parents can view their default tasks"
   ON default_tasks FOR SELECT
-  USING (auth.role() = 'authenticated');
+  USING (auth.uid() = parent_id);
+
+CREATE POLICY "Parents can insert default tasks"
+  ON default_tasks FOR INSERT
+  WITH CHECK (auth.uid() = parent_id);
+
+CREATE POLICY "Parents can update default tasks"
+  ON default_tasks FOR UPDATE
+  USING (auth.uid() = parent_id);
+
+CREATE POLICY "Parents can delete default tasks"
+  ON default_tasks FOR DELETE
+  USING (auth.uid() = parent_id);
 
 -- CHILD TASKS: parent can manage tasks for their children
 CREATE POLICY "Parents can view child tasks"
@@ -205,4 +209,15 @@ CREATE POLICY "Users can delete their avatars"
     bucket_id = 'children-avatars'
     AND auth.role() = 'authenticated'
   );
+
+-- ============================================
+-- MIGRATION: Add parent_id to default_tasks
+-- Run this if you already have the table without parent_id
+-- ============================================
+-- ALTER TABLE default_tasks ADD COLUMN parent_id UUID REFERENCES auth.users(id) ON DELETE CASCADE;
+-- DROP POLICY IF EXISTS "Authenticated users can view default tasks" ON default_tasks;
+-- CREATE POLICY "Parents can view their default tasks" ON default_tasks FOR SELECT USING (auth.uid() = parent_id);
+-- CREATE POLICY "Parents can insert default tasks" ON default_tasks FOR INSERT WITH CHECK (auth.uid() = parent_id);
+-- CREATE POLICY "Parents can update default tasks" ON default_tasks FOR UPDATE USING (auth.uid() = parent_id);
+-- CREATE POLICY "Parents can delete default tasks" ON default_tasks FOR DELETE USING (auth.uid() = parent_id);
 
