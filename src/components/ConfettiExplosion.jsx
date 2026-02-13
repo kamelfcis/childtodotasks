@@ -1,8 +1,18 @@
+import { memo, useMemo } from 'react'
 import Lottie from 'lottie-react'
 import confettiData from '../animations/confettiData.json'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export default function ConfettiExplosion({ show, onComplete }) {
+export default memo(function ConfettiExplosion({ show, onComplete }) {
+  // Pre-calculate random positions so they don't change on re-render
+  const burstPositions = useMemo(() =>
+    Array.from({ length: 4 }, () => ({
+      top: `${20 + Math.random() * 40}%`,
+      left: `${10 + Math.random() * 80}%`,
+      scale: `scale(${1 + Math.random()})`,
+    }))
+  , [])
+
   return (
     <AnimatePresence>
       {show && (
@@ -16,15 +26,15 @@ export default function ConfettiExplosion({ show, onComplete }) {
           {/* Soft overlay */}
           <div className="absolute inset-0 bg-white/30 backdrop-blur-sm" />
 
-          {/* Multiple confetti bursts */}
-          {[...Array(6)].map((_, i) => (
+          {/* Confetti bursts (reduced from 6 to 4) */}
+          {burstPositions.map((pos, i) => (
             <div
               key={i}
               className="absolute"
               style={{
-                top: `${20 + Math.random() * 40}%`,
-                left: `${10 + Math.random() * 80}%`,
-                transform: `scale(${1 + Math.random()})`,
+                top: pos.top,
+                left: pos.left,
+                transform: pos.scale,
               }}
             >
               <Lottie
@@ -55,4 +65,4 @@ export default function ConfettiExplosion({ show, onComplete }) {
       )}
     </AnimatePresence>
   )
-}
+})

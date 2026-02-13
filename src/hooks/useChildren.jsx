@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../services/supabase'
 import { useAuth } from './useAuth'
 
@@ -7,7 +7,7 @@ export const useChildren = () => {
   const [children, setChildren] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const fetchChildren = async () => {
+  const fetchChildren = useCallback(async () => {
     if (!user) return
     setLoading(true)
     const { data, error } = await supabase
@@ -18,13 +18,13 @@ export const useChildren = () => {
 
     if (!error) setChildren(data || [])
     setLoading(false)
-  }
+  }, [user])
 
   useEffect(() => {
     fetchChildren()
-  }, [user])
+  }, [fetchChildren])
 
-  const addChild = async (name, avatarFile) => {
+  const addChild = useCallback(async (name, avatarFile) => {
     if (!user) return { error: 'Not authenticated' }
 
     let avatar_url = null
@@ -54,9 +54,9 @@ export const useChildren = () => {
       setChildren(prev => [...prev, data])
     }
     return { data, error }
-  }
+  }, [user])
 
-  const updateChildPoints = async (childId, points) => {
+  const updateChildPoints = useCallback(async (childId, points) => {
     const { error } = await supabase
       .from('children')
       .update({ points })
@@ -67,9 +67,9 @@ export const useChildren = () => {
         prev.map(c => c.id === childId ? { ...c, points } : c)
       )
     }
-  }
+  }, [])
 
-  const updateChildAvatar = async (childId, avatarFile) => {
+  const updateChildAvatar = useCallback(async (childId, avatarFile) => {
     if (!user || !avatarFile) return { error: 'Missing data' }
 
     const fileExt = avatarFile.name.split('.').pop()
@@ -96,9 +96,9 @@ export const useChildren = () => {
       )
     }
     return { error }
-  }
+  }, [user])
 
-  const deleteChild = async (childId) => {
+  const deleteChild = useCallback(async (childId) => {
     const { error } = await supabase
       .from('children')
       .delete()
@@ -108,8 +108,7 @@ export const useChildren = () => {
       setChildren(prev => prev.filter(c => c.id !== childId))
     }
     return { error }
-  }
+  }, [])
 
   return { children, loading, addChild, deleteChild, updateChildPoints, updateChildAvatar, refetch: fetchChildren }
 }
-

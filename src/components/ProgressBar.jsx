@@ -1,6 +1,7 @@
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 
-export default function ProgressBar({ completed, total }) {
+export default memo(function ProgressBar({ completed, total }) {
   const percentage = total > 0 ? (completed / total) * 100 : 0
 
   return (
@@ -33,4 +34,4 @@ export default function ProgressBar({ completed, total }) {
       )}
     </div>
   )
-}
+})

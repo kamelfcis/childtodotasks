@@ -1,6 +1,7 @@
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 
-export default function PointsBadge({ points, size = 'md' }) {
+export default memo(function PointsBadge({ points, size = 'md' }) {
   const sizes = {
     sm: 'text-sm px-3 py-1',
     md: 'text-lg px-4 py-2',
@@ -28,4 +29,4 @@ export default function PointsBadge({ points, size = 'md' }) {
       <span className="text-xs font-normal text-text-muted">pts</span>
     </motion.div>
   )
-}
+})

@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import { useState, memo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FiEdit3, FiTrash2, FiPlus, FiCheck, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi'
+import { FiEdit3, FiTrash2, FiPlus, FiCheck, FiX, FiChevronDown, FiChevronUp, FiArrowUp, FiArrowDown } from 'react-icons/fi'
 import IconPicker from './IconPicker'
 import { playPop } from '../sounds/useSounds'
 
 // ============================================
 // Single task row — view / edit mode
 // ============================================
-function TaskRow({ task, onUpdate, onDelete, index }) {
+const TaskRow = memo(function TaskRow({ task, onUpdate, onDelete, onReorder, index, isFirst, isLast }) {
   const [editing, setEditing] = useState(false)
   const [title, setTitle] = useState(task.title)
   const [icon, setIcon] = useState(task.icon || '⭐')
@@ -132,7 +132,60 @@ function TaskRow({ task, onUpdate, onDelete, index }) {
         </div>
       ) : (
         /* ========== VIEW MODE ========== */
-        <div className="p-4 flex items-center gap-4">
+        <div className="p-4 flex items-center gap-3">
+          {/* Reorder Arrows — premium pill design */}
+          <div className="flex flex-col gap-1 flex-shrink-0">
+            <motion.button
+              whileHover={{ scale: 1.15, y: -1 }}
+              whileTap={{ scale: 0.85 }}
+              onClick={() => onReorder(task.id, 'up')}
+              disabled={isFirst}
+              className={`group relative w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                isFirst
+                  ? 'bg-gray-50 text-gray-300 cursor-not-allowed'
+                  : 'bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-200 text-indigo-500 hover:from-indigo-100 hover:to-blue-100 hover:border-indigo-300 hover:text-indigo-600 hover:shadow-md hover:shadow-indigo-100 cursor-pointer'
+              }`}
+              title="Move up"
+            >
+              <FiArrowUp className="text-sm stroke-[2.5]" />
+              {!isFirst && (
+                <motion.div
+                  className="absolute inset-0 rounded-lg bg-indigo-400/10"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
+                />
+              )}
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.15, y: 1 }}
+              whileTap={{ scale: 0.85 }}
+              onClick={() => onReorder(task.id, 'down')}
+              disabled={isLast}
+              className={`group relative w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                isLast
+                  ? 'bg-gray-50 text-gray-300 cursor-not-allowed'
+                  : 'bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-200 text-indigo-500 hover:from-indigo-100 hover:to-blue-100 hover:border-indigo-300 hover:text-indigo-600 hover:shadow-md hover:shadow-indigo-100 cursor-pointer'
+              }`}
+              title="Move down"
+            >
+              <FiArrowDown className="text-sm stroke-[2.5]" />
+              {!isLast && (
+                <motion.div
+                  className="absolute inset-0 rounded-lg bg-indigo-400/10"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
+                />
+              )}
+            </motion.button>
+          </div>
+
+          {/* Order badge */}
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-100 to-pink-100 border border-purple-200 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-black text-purple-500">{index + 1}</span>
+          </div>
+
           {/* Icon */}
           <div className="w-12 h-12 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-2xl flex-shrink-0">
             {task.icon || '⭐'}
@@ -169,7 +222,7 @@ function TaskRow({ task, onUpdate, onDelete, index }) {
       )}
     </motion.div>
   )
-}
+})
 
 // ============================================
 // NEW TASK FORM
@@ -287,9 +340,14 @@ function AddTaskForm({ onAdd, onCancel }) {
 // ============================================
 // MAIN TASK MANAGER COMPONENT
 // ============================================
-export default function TaskManager({ tasks, onAdd, onUpdate, onDelete, loading }) {
+export default memo(function TaskManager({ tasks, onAdd, onUpdate, onDelete, onReorder, loading }) {
   const [showAddForm, setShowAddForm] = useState(false)
   const [expanded, setExpanded] = useState(true)
+
+  const handleReorder = useCallback((taskId, direction) => {
+    onReorder?.(taskId, direction)
+    playPop()
+  }, [onReorder])
 
   return (
     <motion.div
@@ -314,7 +372,7 @@ export default function TaskManager({ tasks, onAdd, onUpdate, onDelete, loading 
           <div>
             <h2 className="text-xl font-black text-text-primary">Manage Tasks</h2>
             <p className="text-text-muted text-sm font-medium">
-              {tasks.length} task{tasks.length !== 1 ? 's' : ''} • Edit names & icons
+              {tasks.length} task{tasks.length !== 1 ? 's' : ''} • Edit, reorder & customize
             </p>
           </div>
         </div>
@@ -338,6 +396,19 @@ export default function TaskManager({ tasks, onAdd, onUpdate, onDelete, loading 
             className="overflow-visible"
           >
             <div className="px-6 pb-6 space-y-3">
+              {/* Reorder hint */}
+              {tasks.length > 1 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-50/80 border border-indigo-100 text-indigo-600 text-xs font-semibold"
+                >
+                  <FiArrowUp className="text-sm" />
+                  <FiArrowDown className="text-sm" />
+                  <span>Use arrows to reorder tasks — children will see them in this order</span>
+                </motion.div>
+              )}
+
               {/* Add new task button */}
               <AnimatePresence mode="wait">
                 {showAddForm ? (
@@ -391,7 +462,10 @@ export default function TaskManager({ tasks, onAdd, onUpdate, onDelete, loading 
                       task={task}
                       onUpdate={onUpdate}
                       onDelete={onDelete}
+                      onReorder={handleReorder}
                       index={index}
+                      isFirst={index === 0}
+                      isLast={index === tasks.length - 1}
                     />
                   ))}
                 </AnimatePresence>
@@ -402,5 +476,4 @@ export default function TaskManager({ tasks, onAdd, onUpdate, onDelete, loading 
       </AnimatePresence>
     </motion.div>
   )
-}
-
+})

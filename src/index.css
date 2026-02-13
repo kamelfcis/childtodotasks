@@ -97,12 +97,16 @@
 }
 
 .animate-float { animation: float-gentle 5s ease-in-out infinite; }
+.animate-float-gentle { animation: float-gentle 6s ease-in-out infinite; }
 .animate-float-slow { animation: float-slow 7s ease-in-out infinite; }
 .animate-bounce-soft { animation: bounce-soft 4s ease-in-out infinite; }
 .animate-swing { animation: swing-gentle 4s ease-in-out infinite; }
+.animate-swing-gentle { animation: swing-gentle 5s ease-in-out infinite; }
 .animate-shimmer { background-size: 200% auto; animation: shimmer 3s linear infinite; }
 .animate-bubble { animation: bubble-float 10s ease-in infinite; }
+.animate-bubble-float { animation: bubble-float 12s ease-in infinite; }
 .animate-twinkle { animation: twinkle-soft 3s ease-in-out infinite; }
+.animate-twinkle-soft { animation: twinkle-soft 3.5s ease-in-out infinite; }
 .animate-pulse-soft { animation: pulse-soft 3s ease-in-out infinite; }
 
 /* ============================================

@@ -17,7 +17,7 @@ export default function Dashboard() {
   const { children, loading, addChild, deleteChild, updateChildAvatar } = useChildren()
   const avatarInputRefs = useRef({})
   const [updatingAvatarId, setUpdatingAvatarId] = useState(null)
-  const { defaultTasks, loading: tasksLoading, addTask, updateTask, deleteTask } = useTasks()
+  const { defaultTasks, loading: tasksLoading, addTask, updateTask, deleteTask, reorderTask } = useTasks()
   const [showAddForm, setShowAddForm] = useState(false)
   const [childName, setChildName] = useState('')
   const [avatarFile, setAvatarFile] = useState(null)
@@ -186,6 +186,7 @@ export default function Dashboard() {
             onAdd={addTask}
             onUpdate={updateTask}
             onDelete={deleteTask}
+            onReorder={reorderTask}
             loading={tasksLoading}
           />
         </div>

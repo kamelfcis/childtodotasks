@@ -19,6 +19,7 @@ CREATE TABLE default_tasks (
   title TEXT NOT NULL,
   points INTEGER NOT NULL DEFAULT 5,
   icon TEXT DEFAULT '⭐',
+  sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -220,4 +221,11 @@ CREATE POLICY "Users can delete their avatars"
 -- CREATE POLICY "Parents can insert default tasks" ON default_tasks FOR INSERT WITH CHECK (auth.uid() = parent_id);
 -- CREATE POLICY "Parents can update default tasks" ON default_tasks FOR UPDATE USING (auth.uid() = parent_id);
 -- CREATE POLICY "Parents can delete default tasks" ON default_tasks FOR DELETE USING (auth.uid() = parent_id);
+
+-- ============================================
+-- MIGRATION: Add sort_order to default_tasks
+-- Run this in Supabase SQL Editor if you already have the table
+-- ============================================
+-- ALTER TABLE default_tasks ADD COLUMN sort_order INTEGER DEFAULT 0;
+-- UPDATE default_tasks SET sort_order = EXTRACT(EPOCH FROM created_at)::INTEGER WHERE sort_order = 0 OR sort_order IS NULL;
 

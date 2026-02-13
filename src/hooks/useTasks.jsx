@@ -5,16 +5,16 @@ import { supabase } from '../services/supabase'
 // DEFAULT SEED TASKS (used when parent has none)
 // ============================================
 const SEED_TASKS = [
-  { title: 'Brush Teeth', points: 5, icon: '🪥' },
-  { title: 'Study 30 Minutes', points: 10, icon: '📚' },
-  { title: 'Pray', points: 5, icon: '🤲' },
-  { title: 'Clean Room', points: 10, icon: '🧹' },
-  { title: 'Drink Water', points: 3, icon: '💧' },
-  { title: 'Read a Book', points: 10, icon: '📖' },
-  { title: 'Exercise', points: 8, icon: '🏃' },
-  { title: 'Help Parents', points: 10, icon: '🤝' },
-  { title: 'Sleep Early', points: 5, icon: '😴' },
-  { title: 'Eat Healthy', points: 5, icon: '🥗' },
+  { title: 'Brush Teeth', points: 5, icon: '🪥', sort_order: 0 },
+  { title: 'Study 30 Minutes', points: 10, icon: '📚', sort_order: 1 },
+  { title: 'Pray', points: 5, icon: '🤲', sort_order: 2 },
+  { title: 'Clean Room', points: 10, icon: '🧹', sort_order: 3 },
+  { title: 'Drink Water', points: 3, icon: '💧', sort_order: 4 },
+  { title: 'Read a Book', points: 10, icon: '📖', sort_order: 5 },
+  { title: 'Exercise', points: 8, icon: '🏃', sort_order: 6 },
+  { title: 'Help Parents', points: 10, icon: '🤝', sort_order: 7 },
+  { title: 'Sleep Early', points: 5, icon: '😴', sort_order: 8 },
+  { title: 'Eat Healthy', points: 5, icon: '🥗', sort_order: 9 },
 ]
 
 export const useTasks = () => {
@@ -30,6 +30,7 @@ export const useTasks = () => {
       .from('default_tasks')
       .select('*')
       .eq('parent_id', user.id)
+      .order('sort_order', { ascending: true })
       .order('created_at', { ascending: true })
 
     if (!error) {
@@ -59,9 +60,14 @@ export const useTasks = () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return { error: 'Not authenticated' }
 
+    // New tasks go to the end
+    const maxOrder = defaultTasks.length > 0
+      ? Math.max(...defaultTasks.map(t => t.sort_order ?? 0)) + 1
+      : 0
+
     const { data, error } = await supabase
       .from('default_tasks')
-      .insert({ title, points: points || 5, icon: icon || '⭐', parent_id: user.id })
+      .insert({ title, points: points || 5, icon: icon || '⭐', parent_id: user.id, sort_order: maxOrder })
       .select()
       .single()
 
@@ -69,7 +75,7 @@ export const useTasks = () => {
       setDefaultTasks(prev => [...prev, data])
     }
     return { data, error }
-  }, [])
+  }, [defaultTasks])
 
   // Update a task (title, icon, points)
   const updateTask = useCallback(async (taskId, updates) => {
@@ -99,7 +105,39 @@ export const useTasks = () => {
     return { error }
   }, [])
 
-  return { defaultTasks, loading, addTask, updateTask, deleteTask, refetchTasks: fetchTasks }
+  // Reorder tasks — swap sort_order between two tasks
+  const reorderTask = useCallback(async (taskId, direction) => {
+    const currentIndex = defaultTasks.findIndex(t => t.id === taskId)
+    if (currentIndex === -1) return
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
+    if (targetIndex < 0 || targetIndex >= defaultTasks.length) return
+
+    const currentTask = defaultTasks[currentIndex]
+    const targetTask = defaultTasks[targetIndex]
+
+    // Optimistic update — swap in local state immediately
+    const newTasks = [...defaultTasks]
+    newTasks[currentIndex] = targetTask
+    newTasks[targetIndex] = currentTask
+    setDefaultTasks(newTasks)
+
+    // Persist — swap sort_order values in DB
+    const currentOrder = currentTask.sort_order ?? currentIndex
+    const targetOrder = targetTask.sort_order ?? targetIndex
+
+    await Promise.all([
+      supabase
+        .from('default_tasks')
+        .update({ sort_order: targetOrder })
+        .eq('id', currentTask.id),
+      supabase
+        .from('default_tasks')
+        .update({ sort_order: currentOrder })
+        .eq('id', targetTask.id),
+    ])
+  }, [defaultTasks])
+
+  return { defaultTasks, loading, addTask, updateTask, deleteTask, reorderTask, refetchTasks: fetchTasks }
 }
 
 export const useChildTasks = (childId) => {
@@ -114,7 +152,6 @@ export const useChildTasks = (childId) => {
     if (!childId || fetchingRef.current) return
     fetchingRef.current = true
 
-    // Only show loading spinner on initial load, not re-fetches
     if (isInitialLoad) setLoading(true)
 
     const { data, error } = await supabase
@@ -130,7 +167,6 @@ export const useChildTasks = (childId) => {
     return data || []
   }, [childId, today])
 
-  // Initial fetch only once per childId
   useEffect(() => {
     initCalledRef.current = false
     fetchChildTasks(true)
@@ -138,11 +174,9 @@ export const useChildTasks = (childId) => {
 
   const initDailyTasks = useCallback(async (defaultTasks) => {
     if (!childId || !defaultTasks.length) return
-    // Prevent calling init more than once per mount
     if (initCalledRef.current) return
     initCalledRef.current = true
 
-    // Query DB directly for existing tasks — don't rely on stale state
     const { data: existingData } = await supabase
       .from('child_tasks')
       .select('task_id')
@@ -162,7 +196,6 @@ export const useChildTasks = (childId) => {
 
     if (newTasks.length > 0) {
       await supabase.from('child_tasks').insert(newTasks)
-      // Fetch updated tasks without showing loading spinner
       await fetchChildTasks(false)
     }
   }, [childId, today, fetchChildTasks])

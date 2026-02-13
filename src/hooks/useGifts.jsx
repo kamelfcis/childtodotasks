@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../services/supabase'
 import { useAuth } from './useAuth'
 
@@ -7,7 +7,7 @@ export const useGifts = () => {
   const [gifts, setGifts] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const fetchGifts = async () => {
+  const fetchGifts = useCallback(async () => {
     if (!user) return
     setLoading(true)
     const { data, error } = await supabase
@@ -18,13 +18,13 @@ export const useGifts = () => {
 
     if (!error) setGifts(data || [])
     setLoading(false)
-  }
+  }, [user])
 
   useEffect(() => {
     fetchGifts()
-  }, [user])
+  }, [fetchGifts])
 
-  const addGift = async (title, requiredPoints, imageUrl) => {
+  const addGift = useCallback(async (title, requiredPoints, imageUrl) => {
     if (!user) return { error: 'Not authenticated' }
     const { data, error } = await supabase
       .from('gifts')
@@ -39,9 +39,9 @@ export const useGifts = () => {
 
     if (!error) setGifts(prev => [...prev, data])
     return { data, error }
-  }
+  }, [user])
 
-  const deleteGift = async (giftId) => {
+  const deleteGift = useCallback(async (giftId) => {
     const { error } = await supabase
       .from('gifts')
       .delete()
@@ -49,9 +49,9 @@ export const useGifts = () => {
 
     if (!error) setGifts(prev => prev.filter(g => g.id !== giftId))
     return { error }
-  }
+  }, [])
 
-  const claimGift = async (childId, giftId, childPoints, giftCost) => {
+  const claimGift = useCallback(async (childId, giftId, childPoints, giftCost) => {
     if (childPoints < giftCost) return { error: 'Not enough points' }
 
     const { error: rewardError } = await supabase
@@ -68,9 +68,9 @@ export const useGifts = () => {
     if (pointsError) return { error: pointsError.message }
 
     return { error: null }
-  }
+  }, [])
 
-  const getChildRewards = async (childId) => {
+  const getChildRewards = useCallback(async (childId) => {
     const { data, error } = await supabase
       .from('child_rewards')
       .select('*, gifts(*)')
@@ -78,8 +78,7 @@ export const useGifts = () => {
       .order('claimed_at', { ascending: false })
 
     return { data, error }
-  }
+  }, [])
 
   return { gifts, loading, addGift, deleteGift, claimGift, getChildRewards, refetch: fetchGifts }
 }
-

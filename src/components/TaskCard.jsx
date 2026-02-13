@@ -1,7 +1,8 @@
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 import { FiCheck } from 'react-icons/fi'
 
-export default function TaskCard({ task, isDone, onComplete, index }) {
+export default memo(function TaskCard({ task, isDone, onComplete, index }) {
   const taskData = task.default_tasks || task
 
   return (
@@ -87,4 +88,4 @@ export default function TaskCard({ task, isDone, onComplete, index }) {
       </div>
     </motion.div>
   )
-}
+})
